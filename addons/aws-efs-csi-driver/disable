@@ -2,12 +2,12 @@
 set -e
 
 source $SNAP/actions/common/utils.sh
-CURRENT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 
 KUBECTL="$SNAP/microk8s-kubectl.wrapper"
 HELM="$SNAP/microk8s-helm.wrapper"
 echo "Disabling EFS driver"
 
+$KUBECTL delete storageclass efs-sc
 # unload the the manifests
 $HELM delete aws-efs-csi-driver -n kube-system > /dev/null 2>&1
 

@@ -3,10 +3,31 @@ set -e
 
 source $SNAP/actions/common/utils.sh
 CURRENT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+source $CURRENT_DIR/../common/utils.sh
+
+usage() { echo "Usage: sudo microk8s enable aws-ebs-csi-driver [-k <iam_user_key_id>] [-a <iam_user_access_key>]" 1>&2; exit 1; }
+
+while getopts ":k:a:" o; do
+    case "${o}" in
+        k)
+            AWS_ACCESS_KEY_ID=${OPTARG}
+            ;;
+        a)
+            AWS_SECRET_ACCESS_KEY=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -z "${AWS_ACCESS_KEY_ID}" ] || [ -z "${AWS_SECRET_ACCESS_KEY}" ]; then
+    usage
+fi
 
 "$SNAP/microk8s-enable.wrapper" core/helm3
 
-NAMESPACE_PTR="observability"
 KUBECTL="$SNAP/microk8s-kubectl.wrapper"
 HELM="${SNAP}/microk8s-helm3.wrapper"
 
@@ -15,19 +36,8 @@ echo "Enabling EBS driver"
 $HELM repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
 $HELM repo update
 
-read -ra ARGUMENTS <<< "$1"
-if [[ ! -z "${ARGUMENTS[@]}" ]]
-then
-  serviceaccount="${ARGUMENTS[@]}"
-else
-  serviceaccount="none"
-fi
-
-if [[ $serviceaccount == "none" ]]
-then
-    $HELM upgrade --install aws-ebs-csi-driver --namespace kube-system aws-ebs-csi-driver/aws-ebs-csi-driver
-else
-    $HELM upgrade --install aws-ebs-csi-driver --namespace kube-system aws-ebs-csi-driver/aws-ebs-csi-driver --set controller.serviceAccount.name=$serviceaccount
-fi
+$KUBECTL create secret generic aws-secret --namespace kube-system --from-literal "key_id=${AWS_ACCESS_KEY_ID}" --from-literal "access_key=${AWS_SECRET_ACCESS_KEY}" || true
+$HELM upgrade --install aws-ebs-csi-driver --namespace kube-system aws-ebs-csi-driver/aws-ebs-csi-driver
+use_addon_manifest aws-ebs-csi-driver/storageclass apply
 
 echo "EBS driver has been enabled."

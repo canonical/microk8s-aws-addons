@@ -3,11 +3,28 @@ set -e
 
 source $SNAP/actions/common/utils.sh
 CURRENT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+source $CURRENT_DIR/../common/utils.sh
+
+usage() { echo "Usage: sudo microk8s enable aws-efs-csi-driver [-i <filesystem_id>]" 1>&2; exit 1; }
+
+while getopts ":i:" o; do
+    case "${o}" in
+        i)
+            FSID=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -z "${FSID}" ]; then
+    usage
+fi
 
 "$SNAP/microk8s-enable.wrapper" core/helm3
 
-NAMESPACE_PTR="observability"
-KUBECTL="$SNAP/microk8s-kubectl.wrapper"
 HELM="${SNAP}/microk8s-helm3.wrapper"
 
 echo "Enabling EFS driver"
@@ -15,19 +32,9 @@ echo "Enabling EFS driver"
 $HELM repo add aws-efs-csi-driver https://kubernetes-sigs.github.io/aws-efs-csi-driver
 $HELM repo update
 
-read -ra ARGUMENTS <<< "$1"
-if [[ ! -z "${ARGUMENTS[@]}" ]]
-then
-  serviceaccount="${ARGUMENTS[@]}"
-else
-  serviceaccount="none"
-fi
-
-if [[ $serviceaccount == "none" ]]
-then
-    $HELM upgrade --install aws-efs-csi-driver --namespace kube-system aws-efs-csi-driver/aws-efs-csi-driver
-else
-    $HELM upgrade --install aws-efs-csi-driver --namespace kube-system aws-efs-csi-driver/aws-efs-csi-driver --set controller.serviceAccount.name=$serviceaccount
-fi
+$HELM upgrade --install aws-efs-csi-driver --namespace kube-system aws-efs-csi-driver/aws-efs-csi-driver
+declare -A map
+map[\$FSID]="$FSID"
+use_addon_manifest aws-efs-csi-driver/storageclass apply "$(declare -p map)"
 
 echo "EFS driver has been enabled."

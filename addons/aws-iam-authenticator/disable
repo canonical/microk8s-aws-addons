@@ -5,14 +5,12 @@ source $SNAP/actions/common/utils.sh
 CURRENT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 source $CURRENT_DIR/../common/utils.sh
 
-KUBECTL="$SNAP/microk8s-kubectl.wrapper"
-
 echo "Disabling AWS IAM authentication"
 CLUSTERID="$(echo $RANDOM)"
 declare -A map
 map[\$CLUSTERID]="$CLUSTERID"
-use_addon_manifest aws-iam-auth/aws-iam-authentication delete "$(declare -p map)"
-use_addon_manifest aws-iam-auth/aws-iam-authentication-daemon-local delete "$(declare -p map)"
+use_addon_manifest aws-iam-authenticator/aws-iam-authentication delete "$(declare -p map)"
+use_addon_manifest aws-iam-authenticator/aws-iam-authentication-daemon-local delete "$(declare -p map)"
 
 echo "Configuring the API server"
 skip_opt_in_config "authentication-token-webhook-config-file" kube-apiserver

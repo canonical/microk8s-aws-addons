@@ -16,7 +16,7 @@ chgrp -R $group "${SNAP_DATA}/aws-iam-authenticator"
 CLUSTERID="$(echo $RANDOM)"
 declare -A map
 map[\$CLUSTERID]="$CLUSTERID"
-use_addon_manifest aws-iam-auth/aws-iam-authentication apply "$(declare -p map)"
+use_addon_manifest aws-iam-authenticator/aws-iam-authentication apply "$(declare -p map)"
 
 # Always set the default region unless we are on AWS
 # TODO make default region configurable
@@ -26,14 +26,14 @@ if [ -f /sys/hypervisor/uuid ]
   if [ "$EC2VM" == "ec2" ];
   then
     echo "EC2 node detected"
-    use_addon_manifest aws-iam-auth/aws-iam-authentication-daemon apply
+    use_addon_manifest aws-iam-authenticator/aws-iam-authentication-daemon apply
   else
     echo "VM but not on EC2 detected"
-    use_addon_manifest aws-iam-auth/aws-iam-authentication-daemon-local apply
+    use_addon_manifest aws-iam-authenticator/aws-iam-authentication-daemon-local apply
   fi
 else
   echo "No VM detected"
-  use_addon_manifest aws-iam-auth/aws-iam-authentication-daemon-local apply
+  use_addon_manifest aws-iam-authenticator/aws-iam-authentication-daemon-local apply
 fi
 
 echo "Waiting for the authenticator service to start"
