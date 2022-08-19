@@ -1,0 +1,32 @@
+microk8s-addons:
+  description: "List of all addons for AWS."
+  addons:
+    - name: "aws-iam-auth"
+      description: "AWS IAM Authentication"
+      version: "0.5.2"
+      check_status: "daemonset.apps/aws-iam-authenticator"
+      supported_architectures:
+        - amd64
+        - arm64
+        - s390x
+        - ppc64le
+
+    - name: "aws-ebs-csi-driver"
+      description: "AWS EBS CSI Driver"
+      version: "1.11.2"
+      check_status: "deployment.apps/ebs-csi-controller"
+      supported_architectures:
+        - amd64
+        - arm64
+        - s390x
+        - ppc64le
+
+    - name: "aws-efs-csi-driver"
+      description: "AWS EFS CSI Driver"
+      version: "1.4.0"
+      check_status: "deployment.apps/efs-csi-controller"
+      supported_architectures:
+        - amd64
+        - arm64
+        - s390x
+        - ppc64le
