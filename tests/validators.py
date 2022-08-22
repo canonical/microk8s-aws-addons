@@ -19,4 +19,3 @@ from utils import (
 )
 
 TEMPLATES = Path(__file__).absolute().parent / "templates"
-

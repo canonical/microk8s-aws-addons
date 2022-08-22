@@ -5,12 +5,7 @@ import sh
 import yaml
 from pathlib import Path
 
-from validators import (
-    validate_aws_iam_auth
-)
 from utils import (
-    microk8s_enable,
-    microk8s_disable,
     microk8s_reset,
 )
 from subprocess import CalledProcessError, check_call
@@ -49,5 +44,3 @@ class TestAddons(object):
             sh.microk8s.disable(addon["name"], "--", "--help")
 
         assert expected == {a["name"]: a["status"] for a in status["addons"]}
-
-
