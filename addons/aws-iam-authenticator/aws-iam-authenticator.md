@@ -19,7 +19,7 @@ On your workstation kubectl needs to use your AWS credentials to contact your EK
  
  * You should have a working set of AWS credentials. It is recommended to install the [AWS cli](https://aws.amazon.com/cli/)
   that will guide you in 
-  [configuring and verifing](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) your setup. 
+  [configuring and verifying](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) your setup. 
  * Install the aws-iam-authenticator. The AWS authenticator is called by kubectl and produces a token. This token is
   used to map you to a Kubernetes user. The installation steps depend on the workstation you are on. Please follow the
   steps described in the [official docs](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html).

@@ -21,26 +21,3 @@ class TestAddons(object):
         """
         yield
         microk8s_reset()
-
-    def test_invalid_addon(self):
-        with pytest.raises(sh.ErrorReturnCode_1):
-            sh.microk8s.enable.foo()
-
-    def test_help_text(self):
-        status = yaml.safe_load(sh.microk8s.status(format="yaml").stdout)
-        expected = {a["name"]: "disabled" for a in status["addons"]}
-        expected["ha-cluster"] = "enabled"
-        expected["helm"] = "enabled"
-        expected["helm3"] = "enabled"
-
-        assert expected == {a["name"]: a["status"] for a in status["addons"]}
-
-        for addon in status["addons"]:
-            sh.microk8s.enable(addon["name"], "--", "--help")
-
-        assert expected == {a["name"]: a["status"] for a in status["addons"]}
-
-        for addon in status["addons"]:
-            sh.microk8s.disable(addon["name"], "--", "--help")
-
-        assert expected == {a["name"]: a["status"] for a in status["addons"]}
