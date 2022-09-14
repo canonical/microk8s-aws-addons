@@ -37,7 +37,7 @@ $HELM repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-
 $HELM repo update
 
 $KUBECTL create secret generic aws-secret --namespace kube-system --from-literal "key_id=${AWS_ACCESS_KEY_ID}" --from-literal "access_key=${AWS_SECRET_ACCESS_KEY}" || true
-$HELM upgrade --install aws-ebs-csi-driver --namespace kube-system aws-ebs-csi-driver/aws-ebs-csi-driver
+$HELM upgrade --install aws-ebs-csi-driver --set node.kubeletPath=/var/snap/microk8s/common/var/lib/kubelet --namespace kube-system aws-ebs-csi-driver/aws-ebs-csi-driver
 use_addon_manifest aws-ebs-csi-driver/storageclass apply
 
 echo "EBS driver has been enabled."

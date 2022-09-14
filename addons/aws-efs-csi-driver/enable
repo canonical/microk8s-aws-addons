@@ -25,6 +25,7 @@ fi
 
 "$SNAP/microk8s-enable.wrapper" core/helm3
 
+KUBECTL="$SNAP/microk8s-kubectl.wrapper"
 HELM="${SNAP}/microk8s-helm3.wrapper"
 
 echo "Enabling EFS driver"
@@ -36,5 +37,7 @@ $HELM upgrade --install aws-efs-csi-driver --namespace kube-system aws-efs-csi-d
 declare -A map
 map[\$FSID]="$FSID"
 use_addon_manifest aws-efs-csi-driver/storageclass apply "$(declare -p map)"
+
+$KUBECTL patch ds efs-csi-node --patch-file aws-efs-csi-driver/node-ds-patch.yaml
 
 echo "EFS driver has been enabled."
