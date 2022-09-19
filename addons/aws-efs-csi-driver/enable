@@ -28,7 +28,6 @@ fi
 
 HELM="${SNAP}/microk8s-helm3.wrapper"
 
-
 echo "Enabling EFS driver"
 
 $HELM repo add aws-efs-csi-driver https://canonical.github.io/aws-efs-csi-driver
