@@ -27,6 +27,7 @@ if [ -z "${AWS_ACCESS_KEY_ID}" ] || [ -z "${AWS_SECRET_ACCESS_KEY}" ]; then
 fi
 
 "$SNAP/microk8s-enable.wrapper" core/helm3
+"$SNAP/microk8s-enable.wrapper" core/dns
 
 KUBECTL="$SNAP/microk8s-kubectl.wrapper"
 HELM="${SNAP}/microk8s-helm3.wrapper"

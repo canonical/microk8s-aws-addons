@@ -24,8 +24,10 @@ if [ -z "${FSID}" ]; then
 fi
 
 "$SNAP/microk8s-enable.wrapper" core/helm3
+"$SNAP/microk8s-enable.wrapper" core/dns
 
 HELM="${SNAP}/microk8s-helm3.wrapper"
+
 
 echo "Enabling EFS driver"
 
