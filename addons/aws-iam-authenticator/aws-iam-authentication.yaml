@@ -24,44 +24,44 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: aws-iam-authenticator
 rules:
-- apiGroups:
-  - iamauthenticator.k8s.aws
-  resources:
-  - iamidentitymappings
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - iamauthenticator.k8s.aws
-  resources:
-  - iamidentitymappings/status
-  verbs:
-  - patch
-  - update
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - create
-  - update
-  - patch
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  verbs:
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  resourceNames:
-  - aws-auth
-  verbs:
-  - get
+  - apiGroups:
+      - iamauthenticator.k8s.aws
+    resources:
+      - iamidentitymappings
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - iamauthenticator.k8s.aws
+    resources:
+      - iamidentitymappings/status
+    verbs:
+      - patch
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - update
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    resourceNames:
+      - aws-auth
+    verbs:
+      - get
 
 ---
 apiVersion: v1
@@ -81,9 +81,9 @@ roleRef:
   kind: ClusterRole
   name: aws-iam-authenticator
 subjects:
-- kind: ServiceAccount
-  name: aws-iam-authenticator
-  namespace: kube-system
+  - kind: ServiceAccount
+    name: aws-iam-authenticator
+    namespace: kube-system
 # EKS-Style ConfigMap: roles and users can be mapped in the same way as supported on EKS.
 # If mappings are defined this way they do not need to be redefined on the other ConfigMap.
 # https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html

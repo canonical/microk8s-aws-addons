@@ -24,15 +24,20 @@ if [ -z "${FSID}" ]; then
 fi
 
 "$SNAP/microk8s-enable.wrapper" core/helm3
+"$SNAP/microk8s-enable.wrapper" core/dns
 
 HELM="${SNAP}/microk8s-helm3.wrapper"
 
 echo "Enabling EFS driver"
 
-$HELM repo add aws-efs-csi-driver https://kubernetes-sigs.github.io/aws-efs-csi-driver
+$HELM repo add aws-efs-csi-driver https://canonical.github.io/aws-efs-csi-driver
 $HELM repo update
 
-$HELM upgrade --install aws-efs-csi-driver --namespace kube-system aws-efs-csi-driver/aws-efs-csi-driver
+$HELM upgrade --install aws-efs-csi-driver --set node.kubeletPath=/var/snap/microk8s/common/var/lib/kubelet \
+  --set node.efsStatePath=/var/snap/microk8s/common/run/efs \
+  --set node.efsUCPath=/var/snap/microk8s/common/run/amazon/efs \
+  --set node.efsLegacyUCPath=/var/snap/microk8s/common/etc/amazon/efs \
+  --namespace kube-system aws-efs-csi-driver/aws-efs-csi-driver
 declare -A map
 map[\$FSID]="$FSID"
 use_addon_manifest aws-efs-csi-driver/storageclass apply "$(declare -p map)"
