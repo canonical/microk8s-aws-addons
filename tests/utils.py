@@ -260,3 +260,40 @@ def is_container():
         print("no indication of a container in /proc")
 
     return False
+
+
+def get_aws_access_key_id():
+    if "AWS_ACCESS_KEY_ID" in os.environ:
+        return os.environ["AWS_ACCESS_KEY_ID"]
+    return None
+
+
+def get_aws_secret_access_key():
+    if "AWS_SECRET_ACCESS_KEY" in os.environ:
+        return os.environ["AWS_SECRET_ACCESS_KEY"]
+    return None
+
+
+def get_kubernetes_admin_arn():
+    if "KUBERNETES_ADMIN_ARN" in os.environ:
+        return os.environ["KUBERNETES_ADMIN_ARN"]
+    return None
+
+
+def get_efs_id():
+    if "EFS_ID" in os.environ:
+        return os.environ["EFS_ID"]
+
+
+def is_ec2_instance():
+    if os.path.exists("/sys/hypervisor/uuid"):
+        with open("/sys/hypervisor/uuid", "r") as huid:
+            uid = huid.read(3)
+            if uid.lower() == "ec2":
+                return True
+    elif os.path.exists("/sys/devices/virtual/dmi/id/product_uuid"):
+        with open("/sys/devices/virtual/dmi/id/product_uuid", "r") as huid:
+            uid = huid.read(3)
+            if uid.lower() == "ec2":
+                return True
+    return False
