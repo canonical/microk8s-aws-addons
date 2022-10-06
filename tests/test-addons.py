@@ -67,6 +67,10 @@ class TestAddons(object):
         "AWS_SECRET_ACCESS_KEY" not in os.environ,
         reason="Skipping ebs tests since aws access key secret is not provided",
     )
+    @pytest.mark.skipif(
+        os.environ.get("STRICT") == "yes",
+        reason="Skipping ebs tests in strict confinement as they are expected to fail",
+    )
     def test_aws_ebs_csi_driver(self):
         print("Enabling aws-ebs-csi-driver")
         microk8s_enable(
@@ -94,6 +98,10 @@ class TestAddons(object):
     @pytest.mark.skipif(
         "EFS_ID" not in os.environ,
         reason="Skipping efs tests since efs id is not provided",
+    )
+    @pytest.mark.skipif(
+        os.environ.get("STRICT") == "yes",
+        reason="Skipping efs tests in strict confinement as they are expected to fail",
     )
     def test_aws_efs_csi_driver(self):
         print("Enabling aws-efs-csi-driver")
