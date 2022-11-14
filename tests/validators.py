@@ -94,6 +94,7 @@ def validate_aws_efs_csi_driver():
     kubectl("delete pod efs-pod")
     kubectl("delete pvc efs-claim")
 
+
 def validate_aws_elb_controller():
     pod_manifest = TEMPLATES / "elb-pod.yaml"
     service_manifest = TEMPLATES / "elb-service.yaml"

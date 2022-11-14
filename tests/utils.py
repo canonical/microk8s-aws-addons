@@ -298,6 +298,7 @@ def is_ec2_instance():
                 return True
     return False
 
+
 def get_cluster_id():
     if "CLUSTER_ID" in os.environ:
         return os.environ["CLUSTER_ID"]
