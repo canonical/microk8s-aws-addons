@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+source $SNAP/actions/common/utils.sh
+
+KUBECTL="$SNAP/microk8s-kubectl.wrapper"
+HELM="$SNAP/microk8s-helm.wrapper"
+echo "Disabling ELB controller"
+
+# unload the the manifests
+$HELM delete aws-load-balancer-controller -n kube-system > /dev/null 2>&1
+
+echo "ELB controller has been disabled."

@@ -11,12 +11,14 @@ from utils import (
     get_aws_access_key_id,
     get_aws_secret_access_key,
     get_efs_id,
+    get_cluster_id,
 )
 
 from validators import (
     validate_aws_iam_authenticator,
     validate_aws_ebs_csi_driver,
     validate_aws_efs_csi_driver,
+    validate_aws_elb_controller,
 )
 
 TEMPLATES = Path(__file__).absolute().parent / "templates"
@@ -110,3 +112,31 @@ class TestAddons(object):
         validate_aws_efs_csi_driver()
         print("Disabling aws-efs-csi-driver")
         microk8s_disable("aws-efs-csi-driver")
+
+    @pytest.mark.skipif(
+        is_ec2_instance() == False,
+        reason="Skipping elb tests since we are not in an EC2 instance",
+    )
+    @pytest.mark.skipif(
+        "AWS_ACCESS_KEY_ID" not in os.environ,
+        reason="Skipping elb tests since aws access key id is not provided",
+    )
+    @pytest.mark.skipif(
+        "AWS_SECRET_ACCESS_KEY" not in os.environ,
+        reason="Skipping elb tests since aws access key secret is not provided",
+    )
+    @pytest.mark.skipif(
+        "CLUSTER_ID" not in os.environ,
+        reason="Skipping elb tests since cluster id is not provided",
+    )
+    @pytest.mark.skipif(
+        os.environ.get("STRICT") == "yes",
+        reason="Skipping elb tests in strict confinement as they are expected to fail",
+    )
+    def test_aws_elb_controller(self):
+        print("Enabling aws-elb-controller")
+        microk8s_enable("aws-elb-controller -c {}".format(get_cluster_id()))
+        print("Validating aws-elb-controller")
+        validate_aws_elb_controller()
+        print("Disabling aws-elb-controller")
+        microk8s_disable("aws-elb-controller")

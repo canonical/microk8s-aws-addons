@@ -31,3 +31,24 @@ use_addon_manifest() {
     use_manifest_result="$?"
     rm "${tmp_manifest}"
 }
+
+is_ec2_instance() {
+  if [ -f "/sys/hypervisor/uuid" ]
+  then
+    EC2UID=$(head -c 3 /sys/hypervisor/uuid | tr '[:upper:]' '[:lower:]')
+    if [[ $EC2UID == *"ec2"* ]]
+    then
+      return 0
+    fi
+  else
+    if [ -f "/sys/devices/virtual/dmi/id/product_uuid" ]
+    then
+      EC2UID=$(head -c 3 /sys/devices/virtual/dmi/id/product_uuid | tr '[:upper:]' '[:lower:]')
+      if [[ $EC2UID == *"ec2"* ]]
+      then
+        return 0
+      fi
+    fi
+  fi
+  return 1
+}
