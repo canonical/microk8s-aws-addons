@@ -31,11 +31,13 @@ HELM="${SNAP}/microk8s-helm3.wrapper"
 
 if is_ec2_instance
 then
+  echo "Detected running on EC2 instance, trying to add providerID to the node..."
   INSTANCE_ID=$(curl -sS http://169.254.169.254/latest/meta-data/instance-id)
   A_ZONE=$(curl -sS http://169.254.169.254/latest/meta-data/placement/availability-zone)
   sed -i -n -e '/^--provider-id /!p' -e "\$a--provider-id aws:///$A_ZONE/$INSTANCE_ID" ${SNAP_DATA}/args/kubelet
   hostname=$(hostname)
   "${KUBECTL}" --request-timeout 2m patch node $hostname -p "{\"spec\":{\"providerID\":\"aws:///$A_ZONE/$INSTANCE_ID\"}}"
+  echo "Added providerID=aws:///$A_ZONE/$INSTANCE_ID to the node."
 fi
 
 echo "Enabling ELB controller"
