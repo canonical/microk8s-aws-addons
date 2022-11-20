@@ -1,5 +1,6 @@
 import os
 import yaml
+import time
 from subprocess import check_call
 from pathlib import Path
 
@@ -92,3 +93,22 @@ def validate_aws_efs_csi_driver():
     assert "out.txt" in output
     kubectl("delete pod efs-pod")
     kubectl("delete pvc efs-claim")
+
+
+def validate_aws_elb_controller():
+    pod_manifest = TEMPLATES / "elb-pod.yaml"
+    service_manifest = TEMPLATES / "elb-service.yaml"
+    ingress_manifest = TEMPLATES / "elb-ingress.yaml"
+    kubectl("apply -f {}".format(pod_manifest))
+    wait_for_pod_state("echoserver", "echoserver", "running")
+    kubectl("apply -f {}".format(service_manifest))
+    kubectl("apply -f {}".format(ingress_manifest))
+    time.sleep(15)
+    svc = kubectl_get("svc echoserver -n echoserver")
+    assert "ingress" in svc["status"]["loadBalancer"]
+    assert len(svc["status"]["loadBalancer"]["ingress"][0]["hostname"]) > 0
+    ing = kubectl_get("ingress echoserver -n echoserver")
+    assert "ingress" in ing["status"]["loadBalancer"]
+    assert len(ing["status"]["loadBalancer"]["ingress"][0]["hostname"]) > 0
+    kubectl("delete pod echoserver -n echoserver")
+    kubectl("delete svc echoserver -n echoserver")

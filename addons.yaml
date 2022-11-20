@@ -24,3 +24,11 @@ microk8s-addons:
       supported_architectures:
         - amd64
         - arm64
+
+    - name: "aws-elb-controller"
+      description: "AWS ELB Controller"
+      version: "2.4.5"
+      check_status: "deployment.apps/aws-load-balancer-controller"
+      supported_architectures:
+        - amd64
+        - arm64

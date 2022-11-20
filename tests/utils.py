@@ -297,3 +297,8 @@ def is_ec2_instance():
             if uid.lower() == "ec2":
                 return True
     return False
+
+
+def get_cluster_id():
+    if "CLUSTER_ID" in os.environ:
+        return os.environ["CLUSTER_ID"]
