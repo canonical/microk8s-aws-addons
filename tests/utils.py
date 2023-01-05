@@ -171,6 +171,23 @@ def wait_for_namespace_termination(namespace, timeout_insec=360):
                 return
         time.sleep(10)
 
+def wait_for_volume_cleanup(timeout_insec=360):
+    """
+    Wait for the termination of volumes in the cluster.
+    """
+
+    print("Waiting for volumes to be removed")
+    deadline = datetime.datetime.now() + datetime.timedelta(seconds=timeout_insec)
+    while True:
+        cmd = "get pv -A -o yaml"
+        volumes = kubectl(cmd)
+        if volumes.count("PersistentVolume") == 0:
+            break
+
+        if datetime.datetime.now() > deadline:
+            raise TimeoutError("Timed out while waiting for volumes to be terminated.")
+        else:
+            time.sleep(10)
 
 def microk8s_enable(addon, timeout_insec=300):
     """
