@@ -107,7 +107,7 @@ spec:
             name: aws-iam-authenticator
         - name: output
           hostPath:
-            path: /var/snap/microk8s/current/aws-iam-authenticator
+            path: /var/snap/microk8s/common/aws-iam-authenticator
         - name: state
           hostPath:
-            path: /var/snap/microk8s/current/aws-iam-authenticator
+            path: /var/snap/microk8s/common/aws-iam-authenticator
