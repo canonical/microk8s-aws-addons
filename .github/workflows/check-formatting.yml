@@ -24,7 +24,7 @@ jobs:
         run: |
           set -eux
           black --check .
-          codespell --ignore-words-list="aks" --quiet-level=2
+          codespell --ignore-words-list="aks" --quiet-level=2 --quiet-level=2 --skip="*.patch,*.spec,.tox_env,.git,*.nsi"
       - name: Check YAML formatting
         run: |
           set -eux
