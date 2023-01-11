@@ -110,5 +110,6 @@ def validate_aws_elb_controller():
     ing = kubectl_get("ingress echoserver -n echoserver")
     assert "ingress" in ing["status"]["loadBalancer"]
     assert len(ing["status"]["loadBalancer"]["ingress"][0]["hostname"]) > 0
+    kubectl("delete ing echoserver -n echoserver")
     kubectl("delete pod echoserver -n echoserver")
     kubectl("delete svc echoserver -n echoserver")

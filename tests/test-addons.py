@@ -8,6 +8,7 @@ from utils import (
     microk8s_enable,
     microk8s_disable,
     microk8s_reset,
+    wait_for_volume_cleanup,
     get_aws_access_key_id,
     get_aws_secret_access_key,
     get_efs_id,
@@ -82,6 +83,7 @@ class TestAddons(object):
         )
         print("Validating aws-ebs-csi-driver")
         validate_aws_ebs_csi_driver()
+        wait_for_volume_cleanup()
         print("Disabling aws-ebs-csi-driver")
         microk8s_disable("aws-ebs-csi-driver")
 
@@ -110,6 +112,7 @@ class TestAddons(object):
         microk8s_enable("aws-efs-csi-driver -i {}".format(get_efs_id()))
         print("Validating aws-efs-csi-driver")
         validate_aws_efs_csi_driver()
+        wait_for_volume_cleanup()
         print("Disabling aws-efs-csi-driver")
         microk8s_disable("aws-efs-csi-driver")
 
