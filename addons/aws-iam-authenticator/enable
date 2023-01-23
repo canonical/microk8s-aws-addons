@@ -9,10 +9,10 @@ KUBECTL="$SNAP/microk8s-kubectl.wrapper"
 
 echo "Enabling AWS IAM authentication"
 
-mkdir -p "${SNAP_DATA}/aws-iam-authenticator"
-chmod 777 "${SNAP_DATA}/aws-iam-authenticator"
+run_with_sudo mkdir -p "${SNAP_DATA}/aws-iam-authenticator"
+run_with_sudo chmod 777 "${SNAP_DATA}/aws-iam-authenticator"
 group=$(get_microk8s_group)
-chgrp -R $group "${SNAP_DATA}/aws-iam-authenticator"
+run_with_sudo chgrp -R $group "${SNAP_DATA}/aws-iam-authenticator"
 CLUSTERID="$(echo $RANDOM)"
 declare -A map
 map[\$CLUSTERID]="$CLUSTERID"
