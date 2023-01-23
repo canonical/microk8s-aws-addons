@@ -44,7 +44,7 @@ echo "Enabling ELB controller"
 
 $HELM repo add eks https://aws.github.io/eks-charts
 $HELM repo update
-$HELM upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller --set image.repository amazon/aws-alb-ingress-controller --set clusterName=$CLNAME -n kube-system
+$HELM upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller --set image.repository=amazon/aws-alb-ingress-controller --set clusterName=$CLNAME -n kube-system
 
 restart_service kubelet
 
