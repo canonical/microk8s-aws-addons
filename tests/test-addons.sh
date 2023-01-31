@@ -13,6 +13,12 @@ then
     export AWS_REGION="${AWS_REGION:-"us-east-1"}"
     export INSTANCE_TYPE="${INSTANCE_TYPE:-"m4.large"}"
 
+    export IMAGE_AMI_ID="/aws/service/canonical/ubuntu/server/jammy/stable/current/amd64/hvm/ebs-gp2/ami-id"
+    if [[ $ARCH == *"aarch64"* ]]
+    then
+      export IMAGE_AMI_ID="/aws/service/canonical/ubuntu/server/jammy/stable/current/arm64/hvm/ebs-gp2/ami-id"
+    fi
+
     K8S_USER_ARN=$(aws sts get-caller-identity --query 'Arn' --output text)
     export K8S_USER_ARN
 
@@ -27,7 +33,7 @@ then
       echo ''
     )}"
 
-    aws cloudformation create-stack --stack-name "$STACK_NAME" --template-body file://"$SCRIPT_DIR"/cloudformation-template.yaml --parameters "ParameterKey=PublicKey,ParameterValue='${PUBLIC_KEY}'" "ParameterKey=K8sUserArn,ParameterValue='${K8S_USER_ARN}'" "ParameterKey=NodeInstanceType,ParameterValue='${INSTANCE_TYPE}'" --tags Key=mk8s,Value=mk8s --capabilities CAPABILITY_NAMED_IAM --region $AWS_REGION
+    aws cloudformation create-stack --stack-name "$STACK_NAME" --template-body file://"$SCRIPT_DIR"/cloudformation-template.yaml --parameters "ParameterKey=PublicKey,ParameterValue='${PUBLIC_KEY}'" "ParameterKey=K8sUserArn,ParameterValue='${K8S_USER_ARN}'" "ParameterKey=NodeInstanceType,ParameterValue='${INSTANCE_TYPE}'" "ParameterKey=LatestAmiId,ParameterValue='${IMAGE_AMI_ID}'" --tags Key=mk8s,Value=mk8s --capabilities CAPABILITY_NAMED_IAM --region $AWS_REGION
     aws cloudformation wait stack-create-complete --stack-name "$STACK_NAME" --region "$AWS_REGION"
 
     NODE_IP=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey == 'NodePublicIP'].OutputValue" --output text --region "$AWS_REGION")
