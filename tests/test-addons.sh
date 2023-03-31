@@ -51,6 +51,7 @@ then
       sudo echo AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} | sudo tee -a /etc/environment > /dev/null
       sudo echo KUBERNETES_ADMIN_ARN=${KUBERNETES_ADMIN_ARN} | sudo tee -a /etc/environment > /dev/null
       sudo echo EFS_ID=${EFS_ID} | sudo tee -a /etc/environment > /dev/null
+      sudo snap wait system seed.loaded
     "
 
     if [[ ${TO_CHANNEL} =~ /.*/microk8s.*snap ]]; then
