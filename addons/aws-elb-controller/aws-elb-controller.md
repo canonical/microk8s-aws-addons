@@ -3,7 +3,7 @@ ELB controller requires some configuration on the vpc, subnets and security grou
 
 To setup ELB with MicroK8s you'll need to determine a clusterID, which you'll use to tag subnets/security groups.
 
-To test the setup after calling `sudo microk8s enable aws-elb-controlelr -c <cluster_id>` you can create a service, an ingress and a pod:
+To test the setup after calling `sudo microk8s enable aws-elb-controller -c <cluster_id>` you can create a service, an ingress and a pod:
 ```dtd
 apiVersion: v1
 kind: Service
